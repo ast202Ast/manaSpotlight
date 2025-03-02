@@ -180,9 +180,11 @@ const usersRoutes = {
     },
 
     // route protegee
-    getProfile: (req, res) => {
-      res.json({ user: req.user })
+    getProfile: (req, res) => { 
+    if (!req.user) {
+        return res.status(401).json({ error: "L'utilisateur n'est pas authentifié" })
     }
-}
+    res.json({ message: "Vos informations :", user: req.user })
+    }
 
 export { usersRoutes }
