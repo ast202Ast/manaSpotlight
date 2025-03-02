@@ -186,5 +186,5 @@ const usersRoutes = {
     }
     res.json({ message: "Vos informations :", user: req.user })
     }
-
+}
 export { usersRoutes }
