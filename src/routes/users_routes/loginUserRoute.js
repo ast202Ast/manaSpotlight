@@ -29,7 +29,7 @@ const loginUser = (req, res) => {
         if (!row) {
           return res.status(400).json({ error: 'Utilisateur non trouvé' })
         }
-
+        
         // Comparaison entre le mot de passe fourni a la connexion et a celui identifie dans la base de donnees
         bcrypt.compare(mot_de_passe, row.user_password, (err, verify) => {
           if (err) {

@@ -6,7 +6,7 @@ const getUser = 'SELECT user_id, user_firstname, user_lastname, user_email, user
 
 const getUserByEmail = 'SELECT user_email, user_password, user_role FROM users WHERE user_email = ?'
 
-const getAllUsers = 'SELECT user_id, user_firstname, user_lastname, user_email, user_role FROM users'
+const getAllUsers = 'SELECT user_id, user_firstname, user_lastname, user_email, user_password, user_role FROM users'
 
 const updateUser = 'UPDATE users SET user_firstname = ?, user_lastname = ?, user_email = ?, user_password = ?, user_role = ? WHERE user_id = ?'
 
