@@ -1,41 +1,43 @@
 import express from 'express'
-import dotenv from 'dotenv'
-import { usersRoutes } from './src/routes/usersRoutes.js'
-import { spotlightsRoutes } from './src/routes/spotlightsRoutes.js'
-import { reservationsRoutes } from './src/routes/reservationsRoutes.js'
-import { authMiddleware } from './src/middlewares/authMiddleware.js'
+import { users } from './src/routes/users.js'
+import { spotlights } from './src/routes/spotlights.js'
+import { reservations } from './src/routes/reservations.js'
+import { authMiddleware, roleMiddleware } from './src/middlewares/authMiddleware.js'
 
 const app = express()
 const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
-app.get('/', (req, res) => res.send("WELCOME"))
+app.get('/', (req, res) => res.send("BIENVENU"))
 
-// Utilisateurs
-app.post('/register', usersRoutes.newUser)
-app.post('/login', usersRoutes.loginUser)
-app.get('/users', authMiddleware, usersRoutes.showAllUsers)
-app.get('/users/:id_utilisateur', authMiddleware, usersRoutes.showUser)
-app.put('/users', usersRoutes.updUser)
-app.delete('/users', authMiddleware, usersRoutes.delAllUsers)
-app.delete('/users/:id_utilisateur', authMiddleware, usersRoutes.delUser)
-app.get('/profile', authMiddleware, usersRoutes.getProfile)
+// Endpoints pour les utilisateurs
+app.post('/register', users.newUser)
+app.post('/login', users.loginUser)
+app.get('/profile', authMiddleware, users.getProfile)
+app.get('/users', authMiddleware, users.showAllUsers)
+app.get('/users/:id_utilisateur', authMiddleware, users.showUser)
+app.put('/users', authMiddleware, users.updUser)
+app.delete('/users', authMiddleware, roleMiddleware(['admin']), users.delAllUsers)
+app.delete('/users/:id_utilisateur', authMiddleware, roleMiddleware(['admin']), users.delUser)
 
-// Projecteurs
-app.post('/projectors', authMiddleware,spotlightsRoutes.newSpotlight)
-app.get('/projectors', authMiddleware, spotlightsRoutes.showAllSpotlights)
-app.get('/projectors/:id_projecteur', authMiddleware,spotlightsRoutes.showSpotlight)
-app.put('/projectors', spotlightsRoutes.updSpotlight)
-app.delete('/projectors', authMiddleware, spotlightsRoutes.delAllSpotlights)
-app.delete('/projectors/:id_projecteur', authMiddleware, spotlightsRoutes.delSpotlight)
+// app.delete('/users/:id_utilisateur', authMiddleware, roleMiddleware(['admin']), users.delUser)
 
-// Reservations
-app.post('/reservations', reservationsRoutes.newReservation)
-app.get('/reservations', reservationsRoutes.showAllReservations)
-app.get('/reservations/:id_reservation', reservationsRoutes.showReservation)
-app.put('/reservations', reservationsRoutes.updReservation)
-app.delete('/reservations', authMiddleware, reservationsRoutes.delAllReservations)
-app.delete('/reservations/:id_reservation', authMiddleware,reservationsRoutes.delReservation)
+// Endpoints pour les projecteurs
+app.post('/projectors', spotlights.newSpotlight)
+app.get('/projectors/all_projectors', authMiddleware, spotlights.showAllSpotlights)
+app.get('/projectors/:id_projecteur', authMiddleware, spotlights.showSpotlight)
+app.get('/projectors/', authMiddleware, spotlights.showSpotlightAvailable)
+app.put('/projectors', authMiddleware, spotlights.updSpotlight)
+app.delete('/projectors', authMiddleware, roleMiddleware(['admin']), spotlights.delAllSpotlights)
+app.delete('/projectors/:id', authMiddleware, roleMiddleware(['admin']), spotlights.delSpotlight)
+
+// Endpoints pour les reservations
+app.post('/reservations', reservations.newReservation)
+app.get('/reservations', authMiddleware, reservations.showAllReservations)
+app.get('/reservations/:id_reservation', authMiddleware, reservations.showReservation)
+app.put('/reservations', authMiddleware, reservations.updReservation)
+app.delete('/reservations', authMiddleware, roleMiddleware(['admin']), reservations.delAllReservations)
+app.delete('/reservations/:id', authMiddleware, roleMiddleware(['admin']), reservations.delReservation)
 
 app.listen(port, () => console.log(`L'application a demarre sur le port ${port}.`))

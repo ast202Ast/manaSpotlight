@@ -1,0 +1,5 @@
+# Node.js / Express.js
+node_modules/
+
+# Configurations locales
+.env

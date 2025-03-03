@@ -26,7 +26,8 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS spotlights (
         spotlight_id INTEGER PRIMARY KEY AUTOINCREMENT,
         spotlight_name TEXT NOT NULL,
-        spotlight_state TEXT CHECK(spotlight_state IN ('fonctionnel', 'non fonctionnel')) NOT NULL
+        spotlight_state TEXT CHECK(spotlight_state IN ('fonctionnel', 'non fonctionnel')) NOT NULL,
+        spotlight_available TEXT CHECK(spotlight_available IN ('disponible', 'non disponible')) NOT NULL
     )`)
 
     db.run(`CREATE TABLE IF NOT EXISTS reservations (
@@ -35,8 +36,8 @@ db.serialize(() => {
         spotlight_id INTEGER NOT NULL,
         date_start TEXT NOT NULL,
         date_end TEXT NOT NULL,
-        FOREIGN KEY(user_id) REFERENCES utilisateurs(user_id),
-        FOREIGN KEY(spotlight_id) REFERENCES projecteurs(spotlight_id)
+        FOREIGN KEY(user_id) REFERENCES users(user_id),
+        FOREIGN KEY(spotlight_id) REFERENCES spotlights(spotlight_id)
     )`)
 })
 

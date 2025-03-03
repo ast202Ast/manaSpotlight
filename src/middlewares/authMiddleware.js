@@ -12,12 +12,12 @@ const authMiddleware = (req, res, next) => {
         return res.status(401).json({ message: "Accès refusé, token manquant." })
     }
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err, verify) => {
         if (err) {
             return res.status(403).json({ message: "Token invalide." })
         }
 
-        req.user = decoded
+        req.user = verify
         next()
     })
 }
@@ -27,7 +27,7 @@ const authMiddleware = (req, res, next) => {
 const roleMiddleware = (roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
-            return res.status(403).json({ message: "Accès interdit." })
+            return res.status(403).json({ message: "Accès interdit, vous ne disposez pas des droits necessaires." })
         }
         next()
     }
